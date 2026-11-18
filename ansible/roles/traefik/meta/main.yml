@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  role_name: traefik
+  author: Patrick de Ruiter
+  description: Traefik v2.11 on Docker Compose with Let's Encrypt DNS-01 and a protected dashboard
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+dependencies: []

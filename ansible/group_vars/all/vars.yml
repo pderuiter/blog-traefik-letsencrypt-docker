@@ -1,0 +1,14 @@
+---
+# Values from the post. Secrets live in vault.yml (see vault.yml.example).
+traefik_acme_email: your_email@example.com
+traefik_dashboard_host: traefik.yourdomain.com
+traefik_dashboard_user: admin
+traefik_dashboard_password: "{{ vault_traefik_dashboard_password }}"
+
+# lego's TransIP provider: the account name and the API private key (the key pair
+# you generate in the TransIP control panel).
+traefik_dns_provider: transip
+traefik_dns_provider_env:
+  TRANSIP_ACCOUNT_NAME: your_transip_account_name
+  TRANSIP_PRIVATE_KEY_PATH: /transip.key
+traefik_transip_private_key: "{{ vault_traefik_transip_private_key }}"

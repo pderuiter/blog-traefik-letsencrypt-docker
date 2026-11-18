@@ -1,0 +1,6 @@
+---
+- name: Traefik with Let's Encrypt DNS-01 (TransIP) on Docker
+  hosts: traefik
+  roles:
+    - role: docker_engine
+    - role: traefik

@@ -1,0 +1,45 @@
+# {{ ansible_managed }}
+services:
+  traefik:
+    image: {{ traefik_image }}
+    container_name: {{ traefik_container_name }}
+    restart: always
+    ports:
+      - "{{ traefik_http_port }}:80"
+      - "{{ traefik_https_port }}:443"
+{% if traefik_dns_provider_env | length > 0 %}
+    environment:
+{% for name, value in traefik_dns_provider_env.items() %}
+      - {{ name }}={{ value }}
+{% endfor %}
+{% endif %}
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./config/traefik.yml:/traefik.yml:ro"
+      - "./config/acme.json:/acme.json"
+{% if traefik_transip_private_key | length > 0 %}
+      - "./config/transip.key:/transip.key:ro"
+{% endif %}
+{% for volume in traefik_extra_volumes %}
+      - "{{ volume }}"
+{% endfor %}
+{% if traefik_extra_hosts | length > 0 %}
+    extra_hosts:
+{% for entry in traefik_extra_hosts %}
+      - "{{ entry }}"
+{% endfor %}
+{% endif %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`{{ traefik_dashboard_host }}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users={{ traefik_dashboard_user }}:{{ traefik_dashboard_hash.stdout | replace('$', '$$') }}"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver={{ traefik_cert_resolver }}"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    name: {{ traefik_network }}

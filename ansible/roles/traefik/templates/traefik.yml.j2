@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+api:
+  dashboard: true
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  {{ traefik_cert_resolver }}:
+    acme:
+{% if traefik_acme_ca_server | length > 0 %}
+      caServer: "{{ traefik_acme_ca_server }}"
+{% endif %}
+      email: "{{ traefik_acme_email }}"
+      storage: "acme.json"
+      dnsChallenge:
+        provider: "{{ traefik_dns_provider }}"
+        delayBeforeCheck: {{ traefik_dns_delay_before_check }}
+{% if traefik_dns_disable_propagation_check %}
+        disablePropagationCheck: true
+{% endif %}
+
+log:
+  level: {{ traefik_log_level }}
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
+metrics:
+  prometheus:
+    entryPoint: web
+    addEntryPointsLabels: true
+    addServicesLabels: true

@@ -1,0 +1,35 @@
+---
+# Project directory (the post's traefik-docker/) with docker-compose.yml and config/.
+traefik_dir: /opt/traefik-docker
+# v2.11 or later: older v2 releases speak Docker API 1.24, which Docker Engine 29 refuses.
+traefik_image: traefik:v2.11
+traefik_container_name: traefik
+traefik_network: traefik-network
+traefik_http_port: 80
+traefik_https_port: 443
+
+traefik_log_level: DEBUG
+
+# ACME (Let's Encrypt) with a DNS-01 challenge.
+traefik_cert_resolver: transip
+traefik_acme_email: your_email@example.com
+# Empty = Let's Encrypt production. For tests use the staging directory:
+# https://acme-staging-v02.api.letsencrypt.org/directory
+traefik_acme_ca_server: ""
+traefik_dns_provider: transip
+traefik_dns_delay_before_check: 0
+traefik_dns_disable_propagation_check: false
+# Environment for the lego DNS provider (credentials). Treated as secret.
+traefik_dns_provider_env: {}
+# TransIP API private key; written to config/transip.key and mounted as /transip.key
+# when set. Point TRANSIP_PRIVATE_KEY_PATH at /transip.key.
+traefik_transip_private_key: ""
+
+# Dashboard on https://<traefik_dashboard_host>, behind basic auth.
+traefik_dashboard_host: traefik.yourdomain.com
+traefik_dashboard_user: admin
+traefik_dashboard_password: ""
+
+# Extra bind mounts ("src:dest[:ro]") and /etc/hosts entries ("name:ip") for the container.
+traefik_extra_volumes: []
+traefik_extra_hosts: []

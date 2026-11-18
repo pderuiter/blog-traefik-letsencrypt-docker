@@ -1,0 +1,72 @@
+---
+- name: Install the Docker apt repository (Debian/Ubuntu)
+  when: ansible_facts['os_family'] == 'Debian'
+  block:
+    - name: Install the repository prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - python3-debian
+          - python3-requests
+          - python3-yaml
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Add the Docker apt repository
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: [deb]
+        uris: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}"
+        suites: ["{{ ansible_facts['distribution_release'] }}"]
+        components: [stable]
+        signed_by: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
+        state: present
+      register: docker_engine_apt_repo
+
+- name: Install the Docker yum repository (RHEL family)
+  when: ansible_facts['os_family'] == 'RedHat'
+  block:
+    - name: Add the Docker yum repository
+      ansible.builtin.yum_repository:
+        name: docker-ce-stable
+        description: Docker CE Stable
+        baseurl: "https://download.docker.com/linux/rhel/$releasever/$basearch/stable"
+        gpgcheck: true
+        gpgkey: https://download.docker.com/linux/rhel/gpg
+
+    - name: Install the Python modules used by community.docker
+      ansible.builtin.dnf:
+        name:
+          - python3-debian
+          - python3-requests
+          - python3-pyyaml
+        state: present
+
+- name: Install Docker Engine and the Compose plugin (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name: "{{ docker_engine_packages }}"
+    state: present
+    # Refresh the cache when the repository was just added.
+    update_cache: "{{ docker_engine_apt_repo is changed }}"
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Install Docker Engine and the Compose plugin (RHEL family)
+  ansible.builtin.dnf:
+    name: "{{ docker_engine_packages }}"
+    state: present
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Start and enable Docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add users to the docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_engine_users }}"

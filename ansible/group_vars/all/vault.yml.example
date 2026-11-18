@@ -1,0 +1,7 @@
+---
+# cp vault.yml.example vault.yml && ansible-vault encrypt vault.yml
+vault_traefik_dashboard_password: securepassword
+vault_traefik_transip_private_key: |
+  -----BEGIN PRIVATE KEY-----
+  paste the TransIP API private key here
+  -----END PRIVATE KEY-----

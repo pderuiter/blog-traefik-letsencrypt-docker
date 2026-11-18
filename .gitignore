@@ -1,0 +1,15 @@
+.ansible/
+.cache/
+.molecule/
+*.pyc
+__pycache__/
+*.retry
+*.log
+ansible/inventory.yml
+ansible/group_vars/all/vault.yml
+terraform/.terraform/
+terraform/.terraform.lock.hcl.bak
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+terraform/crash.log

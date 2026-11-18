@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: docker_engine
+  author: Patrick de Ruiter
+  description: Docker CE with the Compose v2 plugin from download.docker.com
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+    - name: Debian
+      versions:
+        - bookworm
+    - name: EL
+      versions:
+        - "9"
+dependencies: []

@@ -1,0 +1,14 @@
+proxmox_endpoint  = "https://pve.example.com:8006/"
+proxmox_api_token = "terraform@pve!blog=00000000-0000-0000-0000-000000000000"
+proxmox_insecure  = false
+node_name         = "pve"
+
+gateway        = "192.0.2.1"
+ssh_public_key = "ssh-ed25519 AAAA... you@example.com"
+
+vms = {
+  traefik01 = {
+    group        = "traefik"
+    ipv4_address = "192.0.2.80/24"
+  }
+}

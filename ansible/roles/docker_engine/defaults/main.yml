@@ -1,0 +1,10 @@
+---
+# Docker CE from download.docker.com, with the Compose v2 plugin.
+docker_engine_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+# Users added to the docker group (optional).
+docker_engine_users: []

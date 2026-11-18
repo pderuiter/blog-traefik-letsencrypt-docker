@@ -1,0 +1,10 @@
+---
+# Copy to inventory.yml, or generate it: terraform -chdir=../terraform output -raw ansible_inventory > inventory.yml
+all:
+  vars:
+    ansible_user: ubuntu
+  children:
+    traefik:
+      hosts:
+        traefik01:
+          ansible_host: 192.0.2.80
